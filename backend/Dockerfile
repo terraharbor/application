@@ -10,8 +10,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN addgroup -S app && adduser -S app -G app
-USER app
-
 EXPOSE 8000
+
+RUN apk add --no-cache su-exec         # ← 3 Ko
+RUN addgroup -S app && adduser -S app -G app
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

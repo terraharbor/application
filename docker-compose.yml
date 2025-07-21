@@ -7,7 +7,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./backend/data:/data
+      - ./backend/data:/data:rw
     environment:
       - STATE_DATA_DIR=/data
     restart: unless-stopped
