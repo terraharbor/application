@@ -74,3 +74,18 @@ async def unlock_state(name: str, request: Request):
 
     os.remove(lock_path)
     return Response(status_code=status.HTTP_200_OK)
+
+# DELETE /state/{project}
+@app.delete("/state/{name}")
+async def delete_state(name: str):
+    proj_dir = _project_dir(name)
+    latest_path = _latest_state(name)
+
+    if not os.path.exists(latest_path):
+        raise HTTPException(status_code=404, detail="State not found")
+
+    # Remove the latest state and all versions
+    for file in os.listdir(proj_dir):
+        os.remove(os.path.join(proj_dir, file))
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
