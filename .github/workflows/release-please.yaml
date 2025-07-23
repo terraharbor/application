@@ -1,0 +1,15 @@
+---
+name: "release-please"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  release-please:
+    uses: terraharbor/github-actions-workflows/.github/workflows/release-please.yaml@main
+    secrets:
+      TERRAHARBOR_RELEASER_APP_ID: ${{ secrets.TERRAHARBOR_RELEASER_APP_ID }}
+      TERRAHARBOR_RELEASER_PRIVATE_KEY: ${{ secrets.TERRAHARBOR_RELEASER_PRIVATE_KEY }}
