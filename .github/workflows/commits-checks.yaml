@@ -1,0 +1,9 @@
+---
+name: "commits-checks"
+
+on:
+  pull_request:
+
+jobs:
+  commits-checks:
+    uses: terraharbor/github-actions-workflows/.github/workflows/commits-checks.yaml@main
