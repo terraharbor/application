@@ -1,0 +1,19 @@
+---
+name: "pr-issues-project"
+
+on:
+  issues:
+    types:
+    - opened
+    - reopened
+  pull_request:
+    types:
+    - opened
+    - reopened
+
+jobs:
+  pr-issues-project:
+    uses: terraharbor/github-actions-workflows/.github/workflows/pr-issues-project.yaml@main
+    secrets:
+      TERRAHARBOR_MAINTAINER_APP_ID: ${{ secrets.TERRAHARBOR_MAINTAINER_APP_ID }}
+      TERRAHARBOR_MAINTAINER_PRIVATE_KEY: ${{ secrets.TERRAHARBOR_MAINTAINER_PRIVATE_KEY }}
