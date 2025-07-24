@@ -1,9 +1,14 @@
-from fastapi import FastAPI, Request, Response, HTTPException, status
+from fastapi import FastAPI, Request, Response, HTTPException, status, Depends
+from fastapi.security import OAuth2PasswordBearer
 from fastapi.responses import FileResponse
 import os, time, json
 
 DATA_DIR = os.getenv("STATE_DATA_DIR", "./data")
+
 app = FastAPI(title="Terraform HTTP Backend Prototype")
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
 
 def _project_dir(name: str) -> str:
     path = os.path.join(DATA_DIR, name)
@@ -14,16 +19,16 @@ def _latest_state(name: str) -> str:
     return os.path.join(_project_dir(name), "latest.tfstate")
 
 # GET  /state/{project}
-@app.get("/state/{name}")
-async def get_state(name: str):
+@app.get("/state/{name}", response_class=FileResponse)
+async def get_state(name: str) -> FileResponse:
     path = _latest_state(name)
     if not os.path.exists(path):
         raise HTTPException(status_code=404, detail="State not found")
     return FileResponse(path, media_type="application/octet-stream")
 
 # POST /state/{project}
-@app.post("/state/{name}")
-async def put_state(name: str, request: Request):
+@app.post("/state/{name}", response_class=Response)
+async def put_state(name: str, request: Request) -> Response:
     body = await request.body()
     if not body:
         raise HTTPException(status_code=400, detail="Empty body")
@@ -41,8 +46,8 @@ async def put_state(name: str, request: Request):
 
 
 # LOCK  /state/{project}
-@app.api_route("/state/{name}", methods=["LOCK"])
-async def lock_state(name: str, request: Request):
+@app.api_route("/state/{name}", methods=["LOCK"], response_class=Response)
+async def lock_state(name: str, request: Request) -> Response:
     lock_path = os.path.join(_project_dir(name), ".lock")
     body = (await request.body()).decode() or "{}"
 
@@ -56,8 +61,8 @@ async def lock_state(name: str, request: Request):
     return Response(status_code=status.HTTP_200_OK)
 
 # UNLOCK /state/{project}
-@app.api_route("/state/{name}", methods=["UNLOCK"])
-async def unlock_state(name: str, request: Request):
+@app.api_route("/state/{name}", methods=["UNLOCK"], response_class=Response)
+async def unlock_state(name: str, request: Request) -> Response:
     lock_path = os.path.join(_project_dir(name), ".lock")
     if not os.path.exists(lock_path):
         # idempotent : ok even if the lock does not exist
@@ -76,8 +81,8 @@ async def unlock_state(name: str, request: Request):
     return Response(status_code=status.HTTP_200_OK)
 
 # DELETE /state/{project}
-@app.delete("/state/{name}")
-async def delete_state(name: str):
+@app.delete("/state/{name}", response_class=Response)
+async def delete_state(name: str) -> Response:
     proj_dir = _project_dir(name)
     latest_path = _latest_state(name)
 
