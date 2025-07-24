@@ -21,3 +21,5 @@ jobs:
       dockerfile_path: "Dockerfile"
     secrets:
       GITHUB_TOKEN_CALLER: ${{ secrets.GITHUB_TOKEN }}
+      TERRAHARBOR_MAINTAINER_APP_ID: ${{ secrets.TERRAHARBOR_MAINTAINER_APP_ID }}
+      TERRAHARBOR_MAINTAINER_PRIVATE_KEY: ${{ secrets.TERRAHARBOR_MAINTAINER_PRIVATE_KEY }}
