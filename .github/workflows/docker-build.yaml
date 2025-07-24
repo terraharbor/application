@@ -16,4 +16,4 @@ jobs:
       build_context: "."
       dockerfile_path: "Dockerfile"
     secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN_CALLER: ${{ secrets.GITHUB_TOKEN }}
