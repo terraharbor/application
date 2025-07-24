@@ -8,12 +8,16 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+RUN apk add --no-cache su-exec
+RUN addgroup -S app && adduser -S app -G app
+
 COPY . .
 
-EXPOSE 8000
+RUN mkdir -p /data && chown -R app:app /data
 
-RUN apk add --no-cache su-exec         # ← 3 Ko
-RUN addgroup -S app && adduser -S app -G app
+RUN chown -R app:app /app
+
+EXPOSE 8000
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
