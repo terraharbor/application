@@ -1,0 +1,20 @@
+---
+name: "docker-build"
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  docker-build:
+    uses: terraharbor/github-actions-workflows/.github/workflows/docker-build.yaml@main
+    with:
+      push_image: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
+      build_context: "."
+      dockerfile_path: "Dockerfile"
+    secrets:
+      TERRAHARBOR_RELEASER_APP_ID: ${{ secrets.TERRAHARBOR_RELEASER_APP_ID }}
+      TERRAHARBOR_RELEASER_PRIVATE_KEY: ${{ secrets.TERRAHARBOR_RELEASER_PRIVATE_KEY }}
