@@ -16,5 +16,4 @@ jobs:
       build_context: "."
       dockerfile_path: "Dockerfile"
     secrets:
-      TERRAHARBOR_RELEASER_APP_ID: ${{ secrets.TERRAHARBOR_RELEASER_APP_ID }}
-      TERRAHARBOR_RELEASER_PRIVATE_KEY: ${{ secrets.TERRAHARBOR_RELEASER_PRIVATE_KEY }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
